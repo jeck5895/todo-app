@@ -1,17 +1,50 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <input v-model="todo.label" type="text" name="" id="">
+    <button @click="save">Save</button>
+    <ul v-if="lists.length > 0">
+      <li v-for="(item, index) in lists" :key="item.todo">
+        <span :style="{ 'background-color': item.isCompleted ? 'green' : '#fff' }">{{ item.label }}</span>
+        <input v-model="item.isCompleted" type="checkbox" name="" id="">
+        <button @click="edit(item, index)">Edit</button>
+        <button @click="remove(index)">Delete</button>
+      </li>
+    </ul>
+    <p></p>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  data () {
+    return {
+      todo: {},
+      lists: [],
+    }
+  },
+  methods: {
+    save() {
+      if(this.todo.id) {
+        this.lists.forEach((item, index) => {
+          if(index === this.todo.id) {
+            this.lists[index].label = this.todo.label
+          }
+        })
+        this.todo = {}
+       return
+      }
+      this.lists.push({...this.todo, isCompleted: false})
+      this.todo = {}
+
+    },
+    edit(item, index) {
+      this.todo = {...item, id: index}
+    },
+    remove(idx) {
+      this.lists = this.lists.filter((item, index) => index !== idx)
+    }
   }
 }
 </script>
